@@ -1,6 +1,9 @@
 let offset = 0;
 let total = 0;
+let textElement;
+let reference;
 const limit = 10;
+
 
 
 /**
@@ -59,8 +62,12 @@ async function pokemonTable(Pokedex){
 async function loadData() {
     const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}.`);
     await pokemonTable(data.results);
-    document.getElementById('prev-btn').disabled = offset === 0;
-    document.getElementById('next-btn').disabled = !data.next;
+
+    // Disable "Previous" if offset is 0
+    document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
+
+    // Disable "Next" if there's no next page
+    document.getElementById('next-btn').parentElement.classList.toggle('disabled', !data.next);
 }
 
 
@@ -94,6 +101,17 @@ function buttonPageChange(button){
 }
 
 
+function pageHighlightChecker(currentVal, highlightValue){
+    if (currentVal !== undefined){
+        console.log(typeof highlightValue);
+        for (let i=1; i<4; i++){
+            if (document.getElementById(`pg-${i}-btn`).innerText === String(highlightValue)){
+                document.getElementById(`pg-${i}-btn`).parentElement.classList.add('active');
+            }
+        }
+    }
+}
+
 /**
  * Handles click events for pagination buttons.
  * 
@@ -106,28 +124,35 @@ function buttonPageChange(button){
 function handleButtonClick(event) {
     const buttonId = event.target.id;
     
+    // Remove active class from all pagination buttons
+    document.querySelectorAll('.pagination .page-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
     // Handle different button clicks based on their ID
     if (buttonId === 'prev-btn') {
         console.log('Previous button clicked');
         if (Number(document.getElementById("pg-1-btn").innerText) !== 1){
             buttonPageChange(buttonId);
         } 
+        pageHighlightChecker(textElement, reference);
     } else if (buttonId === 'next-btn') {
         buttonPageChange(buttonId);
+        pageHighlightChecker(textElement, reference);
     } else {
-        const textElement = document.getElementById(`${buttonId}`);
-        const reference = Number(textElement.innerText)
+        textElement = document.getElementById(`${buttonId}`);
+        reference = Number(textElement.innerText);
         if (reference !== total){
-            if ( buttonId.split('-')[1]%3 === 0){
-                // document.getElementById("pg-1-btn").innerText = reference; 
-                // document.getElementById("pg-2-btn").innerText = String(reference + 1);
-                // textElement.innerText = String(reference + 2);  
+            if ( buttonId.split('-')[1]%3 === 0){ 
                 buttonPageChange(buttonId);
+                textElement = document.getElementById("pg-1-btn");
             }
         }
-        // Todo --> make A function if this logic is reusable
         offset = (reference - 1) * limit;
         loadData(); 
+
+        // Highlight the clicked button
+        textElement.parentElement.classList.add('active');
     }
 }
 
