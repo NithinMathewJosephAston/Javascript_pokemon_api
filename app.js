@@ -38,7 +38,7 @@ async function pokemonTable(Pokedex){
         row.innerHTML = `
         <td scope="row" class="align-middle text-center">${offset + index + 1}</td>
         <td class="align-middle text-center">${pokemon.name}</td>
-        <td>
+        <td class="pokemon-sprite">
             <a href="${pokemon.url}" target="_blank">
             <img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="100" height="100">
             </a>
@@ -79,14 +79,17 @@ function buttonPageChange(button){
             for (let i=1; i<4; i++){
                 document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) - 1);
             }
+            break;
         case 'next-btn':
             for (let i=1; i<4; i++){
                 document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 1);
             }
+            break;
         default:
             for (let i=1; i<4; i++){
                 document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 2);
             }
+            break;
     }
 }
 
