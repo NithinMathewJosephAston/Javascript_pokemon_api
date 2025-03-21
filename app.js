@@ -140,6 +140,7 @@ function handleButtonClick(event) {
     } else if (buttonId === 'next-btn') {
         buttonPageChange(buttonId);
         pageHighlightChecker(textElement, reference);
+        document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
     } else {
         textElement = document.getElementById(`${buttonId}`);
         reference = Number(textElement.innerText);
