@@ -63,11 +63,10 @@ async function loadData() {
     const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}.`);
     await pokemonTable(data.results);
 
-    // Disable "Previous" if offset is 0
     document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
 
-    // Disable "Next" if there's no next page
-    document.getElementById('next-btn').parentElement.classList.toggle('disabled', !data.next);
+    // Todo: Disable "Next" if there's no next page
+    // document.getElementById('next-btn').parentElement.classList.toggle('disabled', !data.next);
 }
 
 
@@ -103,7 +102,8 @@ function buttonPageChange(button){
 
 function pageHighlightChecker(currentVal, highlightValue){
     if (currentVal !== undefined){
-        console.log(typeof highlightValue);
+        console.log(highlightValue);
+        console.log(offset);
         for (let i=1; i<4; i++){
             if (document.getElementById(`pg-${i}-btn`).innerText === String(highlightValue)){
                 document.getElementById(`pg-${i}-btn`).parentElement.classList.add('active');
@@ -136,6 +136,7 @@ function handleButtonClick(event) {
             buttonPageChange(buttonId);
         } 
         pageHighlightChecker(textElement, reference);
+        document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
     } else if (buttonId === 'next-btn') {
         buttonPageChange(buttonId);
         pageHighlightChecker(textElement, reference);
