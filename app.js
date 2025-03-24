@@ -60,7 +60,7 @@ async function pokemonTable(Pokedex){
  * @returns {Promise<void>} A promise that resolves when the data is loaded and the UI is updated.
  */
 async function loadData() {
-    const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}.`);
+    const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
     await pokemonTable(data.results);
 
     document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
@@ -91,7 +91,12 @@ function buttonPageChange(button){
                 document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 1);
             }
             break;
-        default:
+        case 'pg-2-btn':
+                for (let i=1; i<4; i++){
+                    document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 1);
+                }
+            break;
+        case 'pg-3-btn':
             for (let i=1; i<4; i++){
                 document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 2);
             }
@@ -146,6 +151,10 @@ function handleButtonClick(event) {
         reference = Number(textElement.innerText);
         if (reference !== total){
             if ( buttonId.split('-')[1]%3 === 0){ 
+                buttonPageChange(buttonId);
+                textElement = document.getElementById("pg-1-btn");
+            }
+            else if (buttonId.split('-')[1]%2 === 0){
                 buttonPageChange(buttonId);
                 textElement = document.getElementById("pg-1-btn");
             }
