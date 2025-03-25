@@ -1,7 +1,6 @@
 let offset = 0;
 let total = 0;
-let textElement;
-let reference;
+let textElement, reference;
 const limit = 10;
 
 
@@ -37,12 +36,13 @@ async function pokemonTable(Pokedex){
         const pokemon = Pokedex[index];
         const row = document.createElement('tr');
         const image_png =  await pokemonFetch(pokemon.url)
+        console.log(pokemon.url);
         row.innerHTML = `
         <td scope="row" class="align-middle text-center">${offset + index + 1}</td>
         <td class="align-middle text-center">${pokemon.name}</td>
         <td class="pokemon-sprite">
             <a href="${pokemon.url}" target="_blank">
-            <img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="100" height="100">
+            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="100" height="100">`: ''}
             </a>
         </td>
         `;
@@ -63,7 +63,7 @@ async function loadData() {
     await pokemonTable(data.results);
 
     document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
-
+    document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText === '131');
     // Todo: Disable "Next" if there's no next page
     // document.getElementById('next-btn').parentElement.classList.toggle('disabled', !data.next);
 }
@@ -100,14 +100,24 @@ function buttonPageChange(button){
                 document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 2);
             }
             break;
+        case '1':
+            for (let i=1; i<4; i++){
+                document.getElementById(`pg-${i}-btn`).innerText = String(i);
+            }
+            textElement = document.getElementById("pg-1-btn");
+            break;
+        case '131':
+            for (let i=1; i<4; i++){
+                document.getElementById(`pg-${i}-btn`).innerText = String(Number(button) - (3 - i));
+            }
+            textElement = document.getElementById("pg-3-btn");
+            break;
     }
 }
 
 
 function pageHighlightChecker(currentVal, highlightValue){
     if (currentVal !== undefined){
-        console.log(highlightValue);
-        console.log(offset);
         for (let i=1; i<4; i++){
             if (document.getElementById(`pg-${i}-btn`).innerText === String(highlightValue)){
                 document.getElementById(`pg-${i}-btn`).parentElement.classList.add('active');
@@ -142,7 +152,6 @@ function handleButtonClick(event) {
 
     // Handle different button clicks based on their ID
     if (buttonId === 'prev-btn') {
-        console.log('Previous button clicked');
         if (Number(document.getElementById("pg-1-btn").innerText) !== 1){
             buttonPageChange(buttonId);
             reference = reference - 1;
@@ -151,21 +160,24 @@ function handleButtonClick(event) {
         pageHighlightChecker(textElement, reference);
         document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
     } else if (buttonId === 'next-btn') {
-        buttonPageChange(buttonId);
-        //Updating the reference value each time the next button is clicked
-        reference = reference + 1;
-        pageLoading();
+        if (Number(document.getElementById("pg-3-btn").innerText) !== 131){
+            buttonPageChange(buttonId);
+            //Updating the reference value each time the next button is clicked
+            reference = reference + 1;
+            pageLoading();
+        }
         pageHighlightChecker(textElement, reference);
-        document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
+        document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText === '131');
     } else {
         textElement = document.getElementById(`${buttonId}`);
         reference = Number(textElement.innerText);
         if (reference !== total){
-            if ( buttonId.split('-')[1]%3 === 0){ 
+            if ( buttonId.split('-')[1]%3 === 0  && document.getElementById(`${buttonId}`).innerText !== '131'){ 
                 buttonPageChange(buttonId);
                 textElement = document.getElementById("pg-1-btn");
             }
-            else if (buttonId.split('-')[1]%2 === 0){
+            else if (buttonId.split('-')[1]%2 === 0 && document.getElementById(`${buttonId}`).innerText !== '131'){
+                console.log("hello");
                 buttonPageChange(buttonId);
                 textElement = document.getElementById("pg-1-btn");
             }
@@ -177,9 +189,27 @@ function handleButtonClick(event) {
     }
 }
 
+function firstAndLastPage(event){
+    reference = event.target.innerText;
+
+    // Remove active class from all pagination buttons
+    document.querySelectorAll('.pagination .page-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    buttonPageChange(reference);
+    pageLoading();
+    // Highlight the clicked button
+    textElement.parentElement.classList.add('active');
+}
+
 // Attach the event listener to all the page buttons dynamically
 document.querySelectorAll('.page-link').forEach(button => {
     button.addEventListener('click', handleButtonClick);
+});
+
+document.querySelectorAll('.btn.btn-primary').forEach(button => {
+    button.addEventListener('click', firstAndLastPage);
 });
 
 fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
