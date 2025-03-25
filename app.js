@@ -5,7 +5,6 @@ let reference;
 const limit = 10;
 
 
-
 /**
  * Fetches data from the API.
  * 
@@ -117,6 +116,13 @@ function pageHighlightChecker(currentVal, highlightValue){
     }
 }
 
+
+function pageLoading(){
+    offset = (reference - 1) * limit;
+    loadData();
+}
+
+
 /**
  * Handles click events for pagination buttons.
  * 
@@ -139,11 +145,16 @@ function handleButtonClick(event) {
         console.log('Previous button clicked');
         if (Number(document.getElementById("pg-1-btn").innerText) !== 1){
             buttonPageChange(buttonId);
+            reference = reference - 1;
+            pageLoading();
         } 
         pageHighlightChecker(textElement, reference);
         document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
     } else if (buttonId === 'next-btn') {
         buttonPageChange(buttonId);
+        //Updating the reference value each time the next button is clicked
+        reference = reference + 1;
+        pageLoading();
         pageHighlightChecker(textElement, reference);
         document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
     } else {
@@ -159,8 +170,7 @@ function handleButtonClick(event) {
                 textElement = document.getElementById("pg-1-btn");
             }
         }
-        offset = (reference - 1) * limit;
-        loadData(); 
+        pageLoading();
 
         // Highlight the clicked button
         textElement.parentElement.classList.add('active');
@@ -172,7 +182,7 @@ document.querySelectorAll('.page-link').forEach(button => {
     button.addEventListener('click', handleButtonClick);
 });
 
-fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}.`)
+fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
 .then((response) => response.json())
 .then((data)=>{
     pokemonTable(data.results);
