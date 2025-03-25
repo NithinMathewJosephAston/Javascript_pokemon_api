@@ -36,7 +36,7 @@ async function pokemonTable(Pokedex){
         const pokemon = Pokedex[index];
         const row = document.createElement('tr');
         const image_png =  await pokemonFetch(pokemon.url)
-        console.log(pokemon.url);
+        // console.log(pokemon.url);
         row.innerHTML = `
         <td scope="row" class="align-middle text-center">${offset + index + 1}</td>
         <td class="align-middle text-center">${pokemon.name}</td>
@@ -62,10 +62,8 @@ async function loadData() {
     const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
     await pokemonTable(data.results);
 
-    document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
-    document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText === '131');
-    // Todo: Disable "Next" if there's no next page
-    // document.getElementById('next-btn').parentElement.classList.toggle('disabled', !data.next);
+    document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText == '1');
+    document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText == total);
 }
 
 
@@ -79,25 +77,24 @@ async function loadData() {
  * @param {string} button - The ID of the clicked pagination button ('prev-btn' or 'next-btn').
  */
 function buttonPageChange(button){
+    let button_values = [0];
+    for (let i=1; i<4; i++){
+        button_values.push( parseInt(document.getElementById(`pg-${i}-btn`).innerText) );
+    }
     switch(button){
         case 'prev-btn':
             for (let i=1; i<4; i++){
-                document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) - 1);
+                document.getElementById(`pg-${i}-btn`).innerText = button_values[i] - 1;
             }
             break;
         case 'next-btn':
             for (let i=1; i<4; i++){
-                document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 1);
+                document.getElementById(`pg-${i}-btn`).innerText = button_values[i] + 1;
             }
-            break;
-        case 'pg-2-btn':
-                for (let i=1; i<4; i++){
-                    document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 1);
-                }
             break;
         case 'pg-3-btn':
             for (let i=1; i<4; i++){
-                document.getElementById(`pg-${i}-btn`).innerText = String(Number(document.getElementById(`pg-${i}-btn`).innerText) + 2);
+                document.getElementById(`pg-${i}-btn`).innerText = button_values[i] + 2;
             }
             break;
         case '1':
@@ -116,10 +113,19 @@ function buttonPageChange(button){
 }
 
 
+/**
+ * Highlights the pagination button corresponding to the given value.
+ * 
+ * @param {number} currentVal - The current value to check (ensures it's defined before proceeding).
+ * @param {number} highlightValue - The value to match against the pagination buttons.
+ * 
+ * This function iterates over pagination buttons (pg-1-btn to pg-3-btn) and checks if their innerText 
+ * matches the `highlightValue`. If a match is found, it adds the 'active' class to its parent element.
+ */
 function pageHighlightChecker(currentVal, highlightValue){
     if (currentVal !== undefined){
         for (let i=1; i<4; i++){
-            if (document.getElementById(`pg-${i}-btn`).innerText === String(highlightValue)){
+            if (document.getElementById(`pg-${i}-btn`).innerText == String(highlightValue)){
                 document.getElementById(`pg-${i}-btn`).parentElement.classList.add('active');
             }
         }
@@ -127,11 +133,43 @@ function pageHighlightChecker(currentVal, highlightValue){
 }
 
 
+/**
+ * Calculates the offset based on the current reference value and triggers data loading.
+ * 
+ * This function updates the `offset` by computing it from the `reference` variable 
+ * and the predefined `limit`. After updating the offset, it calls `loadData()` 
+ * to fetch and display the relevant data.
+ */
 function pageLoading(){
     offset = (reference - 1) * limit;
     loadData();
 }
 
+
+/**
+ * Handles pagination button clicks and updates the displayed data accordingly.
+ * 
+ * This function updates the `reference` based on the clicked button's text. 
+ * It removes the 'active' class from all pagination buttons to reset the highlighting.
+ * Then, it calls `buttonPageChange(reference)` to update the pagination numbers 
+ * and `pageLoading()` to fetch and display the corresponding data. 
+ * Finally, it highlights the clicked button by adding the 'active' class.
+ * 
+ * @param {Event} event - The click event triggered by a pagination button.
+ */
+function firstAndLastPage(event){
+    reference = event.target.innerText;
+
+    // Remove active class from all pagination buttons
+    document.querySelectorAll('.pagination .page-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    buttonPageChange(reference);
+    pageLoading();
+    // Highlight the clicked button
+    textElement.parentElement.classList.add('active');
+}
 
 /**
  * Handles click events for pagination buttons.
@@ -160,25 +198,24 @@ function handleButtonClick(event) {
         pageHighlightChecker(textElement, reference);
         document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
     } else if (buttonId === 'next-btn') {
-        if (Number(document.getElementById("pg-3-btn").innerText) !== 131){
+        if (Number(document.getElementById("pg-3-btn").innerText) != total){
             buttonPageChange(buttonId);
             //Updating the reference value each time the next button is clicked
             reference = reference + 1;
             pageLoading();
         }
         pageHighlightChecker(textElement, reference);
-        document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText === '131');
+        document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText == total);
     } else {
         textElement = document.getElementById(`${buttonId}`);
         reference = Number(textElement.innerText);
-        if (reference !== total){
-            if ( buttonId.split('-')[1]%3 === 0  && document.getElementById(`${buttonId}`).innerText !== '131'){ 
+        if (reference != total){
+            if ( buttonId.split('-')[1]%3 == 0  && document.getElementById("pg-3-btn").innerText != total){ 
                 buttonPageChange(buttonId);
                 textElement = document.getElementById("pg-1-btn");
             }
-            else if (buttonId.split('-')[1]%2 === 0 && document.getElementById(`${buttonId}`).innerText !== '131'){
-                console.log("hello");
-                buttonPageChange(buttonId);
+            else if (buttonId.split('-')[1]%2 == 0 && document.getElementById("pg-3-btn").innerText != total){
+                buttonPageChange('next-btn');
                 textElement = document.getElementById("pg-1-btn");
             }
         }
@@ -189,19 +226,6 @@ function handleButtonClick(event) {
     }
 }
 
-function firstAndLastPage(event){
-    reference = event.target.innerText;
-
-    // Remove active class from all pagination buttons
-    document.querySelectorAll('.pagination .page-item').forEach(item => {
-        item.classList.remove('active');
-    });
-
-    buttonPageChange(reference);
-    pageLoading();
-    // Highlight the clicked button
-    textElement.parentElement.classList.add('active');
-}
 
 // Attach the event listener to all the page buttons dynamically
 document.querySelectorAll('.page-link').forEach(button => {
@@ -216,5 +240,5 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
 .then((response) => response.json())
 .then((data)=>{
     pokemonTable(data.results);
-    total = Math.round(data.count/limit);
+    total = Math.ceil(data.count/limit);
 })
