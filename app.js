@@ -211,7 +211,7 @@ function handleButtonClick(event) {
         textElement = document.getElementById(`${buttonId}`);
         reference = Number(textElement.innerText);
         if (reference != total){
-            if (Number(document.getElementById("pg-3-btn").innerText) == (total-1)){
+            if (reference == (total-1)){
                 buttonPageChange('next-btn');
                 textElement = document.getElementById("pg-2-btn");
             }
