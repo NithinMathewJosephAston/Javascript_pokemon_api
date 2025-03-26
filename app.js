@@ -97,17 +97,19 @@ function buttonPageChange(button){
                 document.getElementById(`pg-${i}-btn`).innerText = button_values[i] + 2;
             }
             break;
-        case '1':
+        case 'First':
             for (let i=1; i<4; i++){
-                document.getElementById(`pg-${i}-btn`).innerText = String(i);
+                document.getElementById(`pg-${i}-btn`).innerText = i;
             }
             textElement = document.getElementById("pg-1-btn");
+            reference = 1;
             break;
-        case '131':
+        case 'Last':
             for (let i=1; i<4; i++){
-                document.getElementById(`pg-${i}-btn`).innerText = String(Number(button) - (3 - i));
+                document.getElementById(`pg-${i}-btn`).innerText = total - (3 - i);
             }
             textElement = document.getElementById("pg-3-btn");
+            reference = total;
             break;
     }
 }
@@ -158,14 +160,13 @@ function pageLoading(){
  * @param {Event} event - The click event triggered by a pagination button.
  */
 function firstAndLastPage(event){
-    reference = event.target.innerText;
-
+    buttonName = event.target.innerText;
     // Remove active class from all pagination buttons
     document.querySelectorAll('.pagination .page-item').forEach(item => {
         item.classList.remove('active');
     });
 
-    buttonPageChange(reference);
+    buttonPageChange(buttonName);
     pageLoading();
     // Highlight the clicked button
     textElement.parentElement.classList.add('active');
@@ -210,14 +211,18 @@ function handleButtonClick(event) {
         textElement = document.getElementById(`${buttonId}`);
         reference = Number(textElement.innerText);
         if (reference != total){
-            if ( buttonId.split('-')[1]%3 == 0  && document.getElementById("pg-3-btn").innerText != total){ 
+            if (Number(document.getElementById("pg-3-btn").innerText) == (total-1)){
+                buttonPageChange('next-btn');
+                textElement = document.getElementById("pg-2-btn");
+            }
+            else if ( Number(buttonId.split('-')[1]) == 3  && Number(document.getElementById("pg-3-btn").innerText) != total){ 
                 buttonPageChange(buttonId);
                 textElement = document.getElementById("pg-1-btn");
             }
-            else if (buttonId.split('-')[1]%2 == 0 && document.getElementById("pg-3-btn").innerText != total){
+            else if (Number(buttonId.split('-')[1]) == 2 && Number(document.getElementById("pg-3-btn").innerText) != total ){
                 buttonPageChange('next-btn');
                 textElement = document.getElementById("pg-1-btn");
-            }
+            } 
         }
         pageLoading();
 
@@ -232,7 +237,7 @@ document.querySelectorAll('.page-link').forEach(button => {
     button.addEventListener('click', handleButtonClick);
 });
 
-document.querySelectorAll('.btn.btn-primary').forEach(button => {
+document.querySelectorAll('.btn.btn-outline-primary').forEach(button => {
     button.addEventListener('click', firstAndLastPage);
 });
 
