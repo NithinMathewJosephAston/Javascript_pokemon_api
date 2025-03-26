@@ -227,7 +227,8 @@ function handleButtonClick(event) {
         pageLoading();
 
         // Highlight the clicked button
-        textElement.parentElement.classList.add('active');
+        pageHighlightChecker(textElement, reference);
+        // textElement.parentElement.classList.add('active');
     }
 }
 
@@ -246,4 +247,8 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
 .then((data)=>{
     pokemonTable(data.results);
     total = Math.ceil(data.count/limit);
+    textElement = document.getElementById("pg-1-btn")
+    reference = Number(textElement.innerText);
+    pageHighlightChecker(textElement, reference);
+    document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText == total);
 })
