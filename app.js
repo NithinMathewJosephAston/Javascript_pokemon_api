@@ -38,11 +38,11 @@ async function pokemonTable(Pokedex){
         const image_png =  await pokemonFetch(pokemon.url)
         // console.log(pokemon.url);
         row.innerHTML = `
-        <td scope="row" class="align-middle text-center">${offset + index + 1}</td>
-        <td class="align-middle text-center">${pokemon.name}</td>
+        <td scope="row" class="align-middle text-center press-start-2p-regular" style="color:white;font-size:14px;">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
+        <td class="align-middle text-center press-start-2p-regular" style="color:white;font-size:14px">${pokemon.name}</td>
         <td class="pokemon-sprite">
             <a href="${pokemon.url}" target="_blank">
-            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="100" height="100">`: ''}
+            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
             </a>
         </td>
         `;
@@ -191,7 +191,7 @@ function handleButtonClick(event) {
 
     // Handle different button clicks based on their ID
     if (buttonId === 'prev-btn') {
-        if (Number(document.getElementById("pg-1-btn").innerText) !== 1){
+        if (Number(document.getElementById("pg-1-btn").innerText) != 1){
             buttonPageChange(buttonId);
             reference = reference - 1;
             pageLoading();
@@ -238,7 +238,7 @@ document.querySelectorAll('.page-link').forEach(button => {
     button.addEventListener('click', handleButtonClick);
 });
 
-document.querySelectorAll('.btn.btn-outline-primary').forEach(button => {
+document.querySelectorAll('.btn.btn-danger').forEach(button => {
     button.addEventListener('click', firstAndLastPage);
 });
 

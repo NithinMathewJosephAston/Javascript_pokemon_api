@@ -1,3 +1,9 @@
+.press-start-2p-regular {
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
 
 /* Nav bar */
 .custom-color{
@@ -8,10 +14,40 @@
 
 .small-table {
     width: 50%;
-    max-width: 400px;
+    max-width: 550px;
     height: 300px;
 }
 
 .pokemon-sprite {
- width:120px;
+ width:150px;
+ height:150px;
+}
+
+.home{
+    background: url(../images/pk_bg.jpg) no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: row;
+}
+
+table tr td, table tr th{
+    background-color: rgba(210,130,240, 0.3) !important;
+}
+
+.pagination .page-link {
+    border: 2px red; /* Change "red" to any color */
+  }
+
+.pagination .page-item.active .page-link {
+    background-color: orange !important; /* Change active button background */
+    color: white !important; /* Change text color */
+    border-color: orange !important; /* Change border color */
+}
+
+.pagination .disabled .page-link {
+    background-color: white !important; /* Change background color */
+    color: orange !important; /* Change text color */
+    border-color: white !important; /* Change border color */
+    opacity: 1 !important; /* Ensure it's fully visible */
+    cursor: not-allowed; /* Show "not-allowed" cursor */
 }
