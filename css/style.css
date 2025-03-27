@@ -1,8 +1,18 @@
+/* Font */
 .press-start-2p-regular {
     font-family: "Press Start 2P", system-ui;
     font-weight: 400;
     font-style: normal;
-  }
+}
+
+.font-small {
+    font-size: 12px;
+}
+  
+.font-medium {
+font-size: 15px;
+}
+
   
 
 /* Nav bar */

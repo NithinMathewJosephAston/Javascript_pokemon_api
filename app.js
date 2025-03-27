@@ -211,8 +211,9 @@ function handleButtonClick(event) {
         textElement = document.getElementById(`${buttonId}`);
         reference = Number(textElement.innerText);
         if (reference != total){
-            if (reference == (total-1)){
+            if (reference == (total-1) && Number(document.getElementById("pg-3-btn").innerText) == (total-1)){
                 buttonPageChange('next-btn');
+                console.log(reference);
                 textElement = document.getElementById("pg-2-btn");
             }
             else if ( Number(buttonId.split('-')[1]) == 3  && Number(document.getElementById("pg-3-btn").innerText) != total){ 
@@ -220,6 +221,7 @@ function handleButtonClick(event) {
                 textElement = document.getElementById("pg-1-btn");
             }
             else if (Number(buttonId.split('-')[1]) == 2 && Number(document.getElementById("pg-3-btn").innerText) != total ){
+                // console.log(document.getElementById("pg-3-btn").innerText);
                 buttonPageChange('next-btn');
                 textElement = document.getElementById("pg-1-btn");
             } 
@@ -234,11 +236,11 @@ function handleButtonClick(event) {
 
 
 // Attach the event listener to all the page buttons dynamically
-document.querySelectorAll('.page-link').forEach(button => {
+document.querySelectorAll('.page-link.bg-danger.text-white.press-start-2p-regular.font-small').forEach(button => {
     button.addEventListener('click', handleButtonClick);
 });
 
-document.querySelectorAll('.btn.btn-danger').forEach(button => {
+document.querySelectorAll('.btn.btn-danger.press-start-2p-regular.font-small').forEach(button => {
     button.addEventListener('click', firstAndLastPage);
 });
 
