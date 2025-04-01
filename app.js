@@ -42,7 +42,7 @@ async function pokemonTable(Pokedex){
         <td class="align-middle text-center press-start-2p-regular" style="color:white;font-size:14px">${pokemon.name}</td>
         <td class="pokemon-sprite">
             <a href="${pokemon.url}" target="_blank">
-            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
+            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}">`: ''}
             </a>
         </td>
         `;

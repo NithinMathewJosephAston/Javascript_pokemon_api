@@ -41,7 +41,7 @@ font-size: 15px;
 }
 
 table tr td, table tr th{
-    background-color: rgba(210,130,240, 0.3) !important;
+    background-color: rgba(255, 165, 0, 0.3) !important;
 }
 
 .pagination .page-link {
@@ -60,4 +60,9 @@ table tr td, table tr th{
     border-color: white !important; /* Change border color */
     opacity: 1 !important; /* Ensure it's fully visible */
     cursor: not-allowed; /* Show "not-allowed" cursor */
+}
+
+.table-hover tbody tr:hover td {
+    color: black !important;  /* Ensure text turns black on hover */
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Adjust background if needed */
 }
