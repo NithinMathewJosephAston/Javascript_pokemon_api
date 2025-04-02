@@ -42,7 +42,7 @@ async function pokemonTable(Pokedex){
         <td class="align-middle text-center press-start-2p-regular" style="color:white;font-size:14px">${pokemon.name}</td>
         <td class="pokemon-sprite">
             <a href="${pokemon.url}" target="_blank">
-            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}">`: ''}
+            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
             </a>
         </td>
         `;
@@ -236,11 +236,11 @@ function handleButtonClick(event) {
 
 
 // Attach the event listener to all the page buttons dynamically
-document.querySelectorAll('.page-link.bg-danger.text-white.press-start-2p-regular.font-small').forEach(button => {
+document.querySelectorAll('.page-link').forEach(button => {
     button.addEventListener('click', handleButtonClick);
 });
 
-document.querySelectorAll('.btn.btn-danger.press-start-2p-regular.font-small').forEach(button => {
+document.querySelectorAll('.btn.btn-danger').forEach(button => {
     button.addEventListener('click', firstAndLastPage);
 });
 
