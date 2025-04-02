@@ -38,8 +38,8 @@ async function pokemonTable(Pokedex){
         const image_png =  await pokemonFetch(pokemon.url)
         // console.log(pokemon.url);
         row.innerHTML = `
-        <td scope="row" class="align-middle text-center press-start-2p-regular" style="color:white;font-size:14px;">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
-        <td class="align-middle text-center press-start-2p-regular" style="color:white;font-size:14px">${pokemon.name}</td>
+        <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
+        <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
         <td class="pokemon-sprite">
             <a href="${pokemon.url}" target="_blank">
             ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
