@@ -125,9 +125,10 @@ function buttonPageChange(button){
  * matches the `highlightValue`. If a match is found, it adds the 'active' class to its parent element.
  */
 function pageHighlightChecker(currentVal, highlightValue){
+    highlightValue = String(highlightValue);
     if (currentVal !== undefined){
         for (let i=1; i<4; i++){
-            if (document.getElementById(`pg-${i}-btn`).innerText == String(highlightValue)){
+            if (document.getElementById(`pg-${i}-btn`).innerText == highlightValue){
                 document.getElementById(`pg-${i}-btn`).parentElement.classList.add('active');
             }
         }
