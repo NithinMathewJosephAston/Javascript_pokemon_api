@@ -59,7 +59,7 @@ async function pokemonTable(Pokedex){
  * @returns {Promise<void>} A promise that resolves when the data is loaded and the UI is updated.
  */
 async function loadData() {
-    const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
+    const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}try`);
     await pokemonTable(data.results);
 
     document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText == '1');
@@ -248,6 +248,7 @@ document.querySelectorAll('.btn.btn-danger').forEach(button => {
 });
 
 fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
+// fetch(``)
 .then((response) => response.json())
 .then((data)=>{
     pokemonTable(data.results);
@@ -255,5 +256,14 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
     textElement = document.getElementById("pg-1-btn")
     reference = Number(textElement.innerText);
     pageHighlightChecker(textElement, reference);
-    document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText == total);
+    is_last = document.getElementById("pg-3-btn").innerText == total
+    document.getElementById('next-btn').parentElement.classList.toggle('disabled', is_last);
+})
+.catch((error)=>{
+    console.log(error);
+    document.getElementById('pokemon-table').style.display = 'none';
+    document.getElementById('pagination-container').classList.add('d-none');
+    const errorDiv = document.getElementById('error-message');
+        errorDiv.innerText = "Oops! Unable to load Pokémon. Please try again later.";
+        errorDiv.style.display = 'block';
 })

@@ -41,6 +41,8 @@ background: url(../images/pk_bg.jpg) no-repeat;
 background-size: cover;
 display: flex;
 flex-direction: row;
+background-attachment: fixed;   /* Keeps it in place when scrolling */
+min-height: 100vh;              /* Makes sure body is always at least full screen height */
 }
 
 table tr td, table tr th{
