@@ -198,7 +198,8 @@ function handleButtonClick(event) {
             pageLoading();
         } 
         pageHighlightChecker(textElement, reference);
-        document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText === '1');
+        is_first = document.getElementById("pg-1-btn").innerText === '1';
+        document.getElementById('prev-btn').parentElement.classList.toggle('disabled', is_first);
     } else if (buttonId === 'next-btn') {
         if (Number(document.getElementById("pg-3-btn").innerText) != total){
             buttonPageChange(buttonId);
@@ -207,7 +208,8 @@ function handleButtonClick(event) {
             pageLoading();
         }
         pageHighlightChecker(textElement, reference);
-        document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText == total);
+        is_last = document.getElementById("pg-3-btn").innerText == total;
+        document.getElementById('next-btn').parentElement.classList.toggle('disabled', is_last);
     } else {
         textElement = document.getElementById(`${buttonId}`);
         reference = Number(textElement.innerText);
