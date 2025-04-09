@@ -41,7 +41,7 @@ async function pokemonTable(Pokedex){
         <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
         <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
         <td class="pokemon-sprite">
-            <a href="${pokemon.url}" target="_blank">
+            <a href="${pokemon.url}">
             ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
             </a>
         </td>
@@ -267,3 +267,23 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
         errorDiv.innerText = "Oops! Unable to load Pokémon. Please try again later.";
         errorDiv.style.display = 'block';
 })
+
+async function showPokemonDetails(url) {
+    const response = await fetch(url);
+    const data = await response.json();
+    // id_num = "No."+String(data.id).padStart(3, '0');
+    // console.log(id_num);
+    document.getElementById('detail-name').innerText = data.name;
+    document.getElementById('detail-image').src = data.sprites.front_default || '';
+    document.getElementById('detail-image').alt = data.name;
+    document.getElementById('detail-info').innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
+    document.getElementById('pokemon-details').style.display = 'block';
+}
+
+document.getElementById('pokemon-table-body').addEventListener('click', function(event) {
+    if (event.target.tagName === 'IMG' || event.target.tagName === 'A') {
+        event.preventDefault();
+        const url = event.target.closest('a').href;
+        showPokemonDetails(url);
+    }
+});

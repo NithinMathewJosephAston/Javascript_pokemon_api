@@ -28,10 +28,12 @@ background-color:red;
 }
 
 /* body */
+table {
+min-width: 550px;
+}
 
 .small-table {
 width: 50%;
-max-width: 550px;
 height: 300px;
 }
 
