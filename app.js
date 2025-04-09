@@ -233,8 +233,8 @@ function handleButtonClick(event) {
 
         // Highlight the clicked button
         pageHighlightChecker(textElement, reference);
-        // textElement.parentElement.classList.add('active');
     }
+    // document.getElementById('pokemon-details').classList.add('d-none'); // Todo --> need to figure out how to disable the panel feature
 }
 
 
@@ -283,6 +283,23 @@ async function showPokemonDetails(url) {
     nameElement.classList.add('card-title', 'text-start');
     cardBody.appendChild(nameElement);
 
+    // Add type
+    const typeContainer = document.createElement('div');
+
+    let types_ = [];
+    data.types.forEach(function(type){
+        types_.push(type.type.name);
+    });
+
+    types_.slice(0,8).forEach(type => {
+    const badgeType = document.createElement('span');
+    badgeType.classList.add('badge', 'rounded-pill', 'text-bg-light', 'me-2', 'mb-2');
+    badgeType.innerText = type.toUpperCase();
+    typeContainer.appendChild(badgeType);
+    });
+    cardBody.appendChild(typeContainer);
+
+    // Add image
     const image = document.createElement('img');
     image.src = data.sprites.front_default || '';
     image.alt = data.name;
@@ -291,11 +308,13 @@ async function showPokemonDetails(url) {
     image.height = 200;
     cardBody.appendChild(image);
     
+    // Add HT WT
     const characteristics = document.createElement('p');
     characteristics.innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
     characteristics.classList.add('card-text', 'text-start');
     cardBody.appendChild(characteristics);
 
+    // Add moves
     const movesContainer = document.createElement('div');
 
     const movesHeader = document.createElement('p');
@@ -308,14 +327,35 @@ async function showPokemonDetails(url) {
         moves_.push(move.move.name);
     });
 
-    moves_.slice(0,4).forEach(move => {
-    const badge = document.createElement('span');
-    badge.classList.add('badge', 'rounded-pill', 'text-bg-danger', 'me-2', 'mb-2');
-    badge.innerText = move.toUpperCase();
-    movesContainer.appendChild(badge);
+    moves_.slice(0,8).forEach(move => {
+    const badgeMove = document.createElement('span');
+    badgeMove.classList.add('badge', 'rounded-pill', 'text-bg-danger', 'me-2', 'mb-2');
+    badgeMove.innerText = move.toUpperCase();
+    movesContainer.appendChild(badgeMove);
     });
-
     cardBody.appendChild(movesContainer);
+
+    // Add ability
+    const abilityContainer = document.createElement('div');
+
+    const abilityHeader = document.createElement('p');
+    abilityHeader.innerText = "ABILITIES:";
+    abilityHeader.classList.add('card-text', 'text-start');
+    abilityContainer.appendChild(abilityHeader);
+
+    let abilities_ = [];
+    data.abilities.forEach(ability =>{
+        abilities_.push(ability.ability.name);
+    });
+    
+    abilities_.slice(0,8).forEach(ability => {
+        const badgeAbility = document.createElement('span');
+        badgeAbility.classList.add('badge', 'rounded-pill', 'text-bg-success', 'me-2', 'mb-2');
+        badgeAbility.innerText = ability.toUpperCase();
+        abilityContainer.appendChild(badgeAbility);
+    });
+    cardBody.appendChild(abilityContainer);
+
     document.getElementById('pokemon-details').style.display = 'block';
 }
 
