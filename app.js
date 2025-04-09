@@ -171,6 +171,7 @@ function firstAndLastPage(event){
     pageLoading();
     // Highlight the clicked button
     textElement.parentElement.classList.add('active');
+    document.getElementById('pokemon-details').style.display = 'none';
 }
 
 /**
@@ -234,7 +235,7 @@ function handleButtonClick(event) {
         // Highlight the clicked button
         pageHighlightChecker(textElement, reference);
     }
-    // document.getElementById('pokemon-details').classList.add('d-none'); // Todo --> need to figure out how to disable the panel feature
+    document.getElementById('pokemon-details').style.display = 'none';
 }
 
 
