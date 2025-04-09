@@ -271,12 +271,51 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
 async function showPokemonDetails(url) {
     const response = await fetch(url);
     const data = await response.json();
-    // id_num = "No."+String(data.id).padStart(3, '0');
-    // console.log(id_num);
-    document.getElementById('detail-name').innerText = data.name;
-    document.getElementById('detail-image').src = data.sprites.front_default || '';
-    document.getElementById('detail-image').alt = data.name;
-    document.getElementById('detail-info').innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
+
+    const cardBody = document.getElementById('detail-card-body');
+
+    // Clear old content first
+    cardBody.innerHTML = '';
+
+    // Add name
+    const nameElement = document.createElement('h5');
+    nameElement.innerText = data.name;
+    nameElement.classList.add('card-title', 'text-start');
+    cardBody.appendChild(nameElement);
+
+    const image = document.createElement('img');
+    image.src = data.sprites.front_default || '';
+    image.alt = data.name;
+    image.classList.add('img-fluid', 'mb-2');
+    image.width = 200;
+    image.height = 200;
+    cardBody.appendChild(image);
+    
+    const characteristics = document.createElement('p');
+    characteristics.innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
+    characteristics.classList.add('card-text', 'text-start');
+    cardBody.appendChild(characteristics);
+
+    const movesContainer = document.createElement('div');
+
+    const movesHeader = document.createElement('p');
+    movesHeader.innerText = "MOVES:";
+    movesHeader.classList.add('card-text', 'text-start');
+    movesContainer.appendChild(movesHeader);
+
+    let moves_ = [];
+    data.moves.forEach(function(move){
+        moves_.push(move.move.name);
+    });
+
+    moves_.slice(0,4).forEach(move => {
+    const badge = document.createElement('span');
+    badge.classList.add('badge', 'rounded-pill', 'text-bg-danger', 'me-2', 'mb-2');
+    badge.innerText = move.toUpperCase();
+    movesContainer.appendChild(badge);
+    });
+
+    cardBody.appendChild(movesContainer);
     document.getElementById('pokemon-details').style.display = 'block';
 }
 
