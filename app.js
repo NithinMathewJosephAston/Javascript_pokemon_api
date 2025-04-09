@@ -37,16 +37,18 @@ async function pokemonTable(Pokedex){
         const row = document.createElement('tr');
         const image_png =  await pokemonFetch(pokemon.url)
         // console.log(pokemon.url);
-        row.innerHTML = `
-        <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
-        <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
-        <td class="pokemon-sprite">
-            <a href="${pokemon.url}">
-            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
-            </a>
-        </td>
-        `;
-        tableBody.appendChild(row);
+        if (image_png.sprites.front_default){
+            row.innerHTML = `
+            <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
+            <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
+            <td class="pokemon-sprite">
+                <a href="${pokemon.url}">
+                ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
+                </a>
+            </td>
+            `;
+            tableBody.appendChild(row);
+        }
     }
 }
 
