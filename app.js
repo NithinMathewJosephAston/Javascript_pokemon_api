@@ -241,6 +241,83 @@ function handleButtonClick(event) {
 }
 
 
+/**
+ * Displays detailed information about a selected Pokémon in the detail card panel.
+ * Fetches the Pokémon's data from the provided URL and populates the card with:
+ * - Name
+ * - Types (as badges)
+ * - Image
+ * - Height and Weight
+ * - Moves (as badges)
+ * - Abilities (as badges)
+ *
+ * @param {string} url - The API URL to fetch the Pokémon details from.
+ */
+async function showPokemonDetails(url) {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const cardBody = document.getElementById('detail-card-body');
+    cardBody.innerHTML = ''; // Clear old content
+
+    // Add Name
+    const nameElement = document.createElement('h5');
+    nameElement.innerText = data.name;
+    nameElement.classList.add('card-title', 'text-start');
+    cardBody.appendChild(nameElement);
+
+    // Badge Helper
+    const createBadgeGroup = (items, label, bgClass) => {
+        const container = document.createElement('div');
+        if (label) {
+            const header = document.createElement('p');
+            header.innerText = label;
+            header.classList.add('card-text', 'text-start');
+            container.appendChild(header);
+        }
+
+        items.slice(0, 8).forEach(item => {
+            const badge = document.createElement('span');
+            badge.classList.add('badge', 'rounded-pill', bgClass, 'me-2', 'mb-2');
+            badge.innerText = item.toUpperCase();
+            container.appendChild(badge);
+        });
+
+        return container;
+    };
+
+    // Add Types
+    const types = data.types.map(t => t.type.name);
+    cardBody.appendChild(createBadgeGroup(types, null, 'text-bg-light'));
+
+    // Add Image
+    const image = document.createElement('img');
+    image.src = data.sprites.front_default || '';
+    image.alt = data.name;
+    image.classList.add('img-fluid', 'mb-2');
+    image.width = 200;
+    image.height = 200;
+    cardBody.appendChild(image);
+
+    // Add Height & Weight
+    const characteristics = document.createElement('p');
+    characteristics.innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
+    characteristics.classList.add('card-text', 'text-start');
+    cardBody.appendChild(characteristics);
+
+    // Add Moves
+    const moves = data.moves.map(m => m.move.name);
+    cardBody.appendChild(createBadgeGroup(moves, "MOVES:", 'text-bg-danger'));
+
+    // Add Abilities
+    const abilities = data.abilities.map(a => a.ability.name);
+    cardBody.appendChild(createBadgeGroup(abilities, "ABILITIES:", 'text-bg-success'));
+
+    // Show the card
+    document.getElementById('pokemon-details').style.display = 'block';
+}
+
+
 // Attach the event listener to all the page buttons dynamically
 document.querySelectorAll('.page-link').forEach(button => {
     button.addEventListener('click', handleButtonClick);
@@ -271,96 +348,6 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
         errorDiv.style.display = 'block';
 })
 
-async function showPokemonDetails(url) {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    const cardBody = document.getElementById('detail-card-body');
-
-    // Clear old content first
-    cardBody.innerHTML = '';
-
-    // Add name
-    const nameElement = document.createElement('h5');
-    nameElement.innerText = data.name;
-    nameElement.classList.add('card-title', 'text-start');
-    cardBody.appendChild(nameElement);
-
-    // Add type
-    const typeContainer = document.createElement('div');
-
-    let types_ = [];
-    data.types.forEach(function(type){
-        types_.push(type.type.name);
-    });
-
-    types_.slice(0,8).forEach(type => {
-    const badgeType = document.createElement('span');
-    badgeType.classList.add('badge', 'rounded-pill', 'text-bg-light', 'me-2', 'mb-2');
-    badgeType.innerText = type.toUpperCase();
-    typeContainer.appendChild(badgeType);
-    });
-    cardBody.appendChild(typeContainer);
-
-    // Add image
-    const image = document.createElement('img');
-    image.src = data.sprites.front_default || '';
-    image.alt = data.name;
-    image.classList.add('img-fluid', 'mb-2');
-    image.width = 200;
-    image.height = 200;
-    cardBody.appendChild(image);
-    
-    // Add HT WT
-    const characteristics = document.createElement('p');
-    characteristics.innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
-    characteristics.classList.add('card-text', 'text-start');
-    cardBody.appendChild(characteristics);
-
-    // Add moves
-    const movesContainer = document.createElement('div');
-
-    const movesHeader = document.createElement('p');
-    movesHeader.innerText = "MOVES:";
-    movesHeader.classList.add('card-text', 'text-start');
-    movesContainer.appendChild(movesHeader);
-
-    let moves_ = [];
-    data.moves.forEach(function(move){
-        moves_.push(move.move.name);
-    });
-
-    moves_.slice(0,8).forEach(move => {
-    const badgeMove = document.createElement('span');
-    badgeMove.classList.add('badge', 'rounded-pill', 'text-bg-danger', 'me-2', 'mb-2');
-    badgeMove.innerText = move.toUpperCase();
-    movesContainer.appendChild(badgeMove);
-    });
-    cardBody.appendChild(movesContainer);
-
-    // Add ability
-    const abilityContainer = document.createElement('div');
-
-    const abilityHeader = document.createElement('p');
-    abilityHeader.innerText = "ABILITIES:";
-    abilityHeader.classList.add('card-text', 'text-start');
-    abilityContainer.appendChild(abilityHeader);
-
-    let abilities_ = [];
-    data.abilities.forEach(ability =>{
-        abilities_.push(ability.ability.name);
-    });
-    
-    abilities_.slice(0,8).forEach(ability => {
-        const badgeAbility = document.createElement('span');
-        badgeAbility.classList.add('badge', 'rounded-pill', 'text-bg-success', 'me-2', 'mb-2');
-        badgeAbility.innerText = ability.toUpperCase();
-        abilityContainer.appendChild(badgeAbility);
-    });
-    cardBody.appendChild(abilityContainer);
-
-    document.getElementById('pokemon-details').style.display = 'block';
-}
 
 document.getElementById('pokemon-table-body').addEventListener('click', function(event) {
     if (event.target.tagName === 'IMG' || event.target.tagName === 'A') {
