@@ -37,16 +37,18 @@ async function pokemonTable(Pokedex){
         const row = document.createElement('tr');
         const image_png =  await pokemonFetch(pokemon.url)
         // console.log(pokemon.url);
-        row.innerHTML = `
-        <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
-        <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
-        <td class="pokemon-sprite">
-            <a href="${pokemon.url}" target="_blank">
-            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
-            </a>
-        </td>
-        `;
-        tableBody.appendChild(row);
+        if (image_png.sprites.front_default){
+            row.innerHTML = `
+            <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
+            <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
+            <td class="pokemon-sprite">
+                <a href="${pokemon.url}">
+                ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
+                </a>
+            </td>
+            `;
+            tableBody.appendChild(row);
+        }
     }
 }
 
@@ -171,6 +173,7 @@ function firstAndLastPage(event){
     pageLoading();
     // Highlight the clicked button
     textElement.parentElement.classList.add('active');
+    document.getElementById('pokemon-details').style.display = 'none';
 }
 
 /**
@@ -233,8 +236,85 @@ function handleButtonClick(event) {
 
         // Highlight the clicked button
         pageHighlightChecker(textElement, reference);
-        // textElement.parentElement.classList.add('active');
     }
+    document.getElementById('pokemon-details').style.display = 'none';
+}
+
+
+/**
+ * Displays detailed information about a selected Pokémon in the detail card panel.
+ * Fetches the Pokémon's data from the provided URL and populates the card with:
+ * - Name
+ * - Types (as badges)
+ * - Image
+ * - Height and Weight
+ * - Moves (as badges)
+ * - Abilities (as badges)
+ *
+ * @param {string} url - The API URL to fetch the Pokémon details from.
+ */
+async function showPokemonDetails(url) {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const cardBody = document.getElementById('detail-card-body');
+    cardBody.innerHTML = ''; // Clear old content
+
+    // Add Name
+    const nameElement = document.createElement('h5');
+    nameElement.innerText = data.name;
+    nameElement.classList.add('card-title', 'text-start');
+    cardBody.appendChild(nameElement);
+
+    // Badge Helper
+    const createBadgeGroup = (items, label, bgClass) => {
+        const container = document.createElement('div');
+        if (label) {
+            const header = document.createElement('p');
+            header.innerText = label;
+            header.classList.add('card-text', 'text-start');
+            container.appendChild(header);
+        }
+
+        items.slice(0, 8).forEach(item => {
+            const badge = document.createElement('span');
+            badge.classList.add('badge', 'rounded-pill', bgClass, 'me-2', 'mb-2');
+            badge.innerText = item.toUpperCase();
+            container.appendChild(badge);
+        });
+
+        return container;
+    };
+
+    // Add Types
+    const types = data.types.map(t => t.type.name);
+    cardBody.appendChild(createBadgeGroup(types, null, 'text-bg-light'));
+
+    // Add Image
+    const image = document.createElement('img');
+    image.src = data.sprites.front_default || '';
+    image.alt = data.name;
+    image.classList.add('img-fluid', 'mb-2');
+    image.width = 200;
+    image.height = 200;
+    cardBody.appendChild(image);
+
+    // Add Height & Weight
+    const characteristics = document.createElement('p');
+    characteristics.innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
+    characteristics.classList.add('card-text', 'text-start');
+    cardBody.appendChild(characteristics);
+
+    // Add Moves
+    const moves = data.moves.map(m => m.move.name);
+    cardBody.appendChild(createBadgeGroup(moves, "MOVES:", 'text-bg-danger'));
+
+    // Add Abilities
+    const abilities = data.abilities.map(a => a.ability.name);
+    cardBody.appendChild(createBadgeGroup(abilities, "ABILITIES:", 'text-bg-success'));
+
+    // Show the card
+    document.getElementById('pokemon-details').style.display = 'block';
 }
 
 
@@ -267,3 +347,12 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
         errorDiv.innerText = "Oops! Unable to load Pokémon. Please try again later.";
         errorDiv.style.display = 'block';
 })
+
+
+document.getElementById('pokemon-table-body').addEventListener('click', function(event) {
+    if (event.target.tagName === 'IMG' || event.target.tagName === 'A') {
+        event.preventDefault();
+        const url = event.target.closest('a').href;
+        showPokemonDetails(url);
+    }
+});
