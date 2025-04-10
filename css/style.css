@@ -1,81 +1,105 @@
-/* Font */
+/*==============================
+=            Fonts             =
+==============================*/
+
+body {
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 12px;
+  }
   
-.font-medium {
-font-size: 15px;
-}
-
-.btn{
-font-size: 12px !important;
-}
-
-
-
-/* Body */
-body{
-font-family: "Press Start 2P", system-ui;
-font-weight: 400;
-font-style: normal;
-font-size: 12px;
-}
-
-/* Nav bar */
-.custom-color{
-color: white !important;
-}
-
-.bg-red{
-background-color:red;
-}
-
-/* body */
-table {
-min-width: 550px;
-}
-
-.small-table {
-width: 50%;
-height: 300px;
-}
-
-.pokemon-sprite {
- width:150px;
- height:150px;
-}
-
-.home{
-background: url(../images/pk_bg.jpg) no-repeat;
-background-size: cover;
-display: flex;
-flex-direction: row;
-background-attachment: fixed;   /* Keeps it in place when scrolling */
-min-height: 100vh;              /* Makes sure body is always at least full screen height */
-}
-
-table tr td, table tr th{
-background-color: rgba(255, 165, 0, 0.3) !important;
-}
-
-.pagination .page-link {
-border: 2px red; /* Change "red" to any color */
-color: white !important; /* Change text color */
-font-size: 12px !important;
-}
-
-.pagination .page-item.active .page-link {
-background-color: orange !important; /* Change active button background */
-color: white !important; /* Change text color */
-border-color: orange !important; /* Change border color */
-}
-
-.pagination .disabled .page-link {
-background-color: white !important; /* Change background color */
-color: orange !important; /* Change text color */
-border-color: white !important; /* Change border color */
-opacity: 1 !important; /* Ensure it's fully visible */
-cursor: not-allowed; /* Show "not-allowed" cursor */
-}
-
-.table-hover tbody tr:hover td {
-color: black !important;  /* Ensure text turns black on hover */
-background-color: rgba(255, 255, 255, 0.8) !important; /* Adjust background if needed */
-}
+  .font-medium {
+    font-size: 15px;
+  }
+  
+  .btn {
+    font-size: 12px !important;
+  }
+  
+  
+  /*==============================
+  =            Layout            =
+  ==============================*/
+  
+  .home {
+    background: url(../images/pk_bg.jpg) no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+  }
+  
+  
+  /*==============================
+  =        Tables & Data         =
+  ==============================*/
+  
+  table {
+    min-width: 550px;
+  }
+  
+  .small-table {
+    width: 50%;
+    height: 300px;
+  }
+  
+  table tr td,
+  table tr th {
+    background-color: rgba(255, 165, 0, 0.3) !important;
+  }
+  
+  .table-hover tbody tr:hover td {
+    color: black !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  
+  /*==============================
+  =         Components           =
+  ==============================*/
+  
+  .pokemon-sprite {
+    width: 150px;
+    height: 150px;
+  }
+  
+  
+  /*==============================
+  =         Navigation           =
+  ==============================*/
+  
+  .custom-color {
+    color: white !important;
+  }
+  
+  .bg-red {
+    background-color: red;
+  }
+  
+  
+  /*==============================
+  =         Pagination           =
+  ==============================*/
+  
+  .pagination .page-link {
+    border: 2px red;
+    color: white !important;
+    font-size: 12px !important;
+  }
+  
+  .pagination .page-item.active .page-link {
+    background-color: orange !important;
+    color: white !important;
+    border-color: orange !important;
+  }
+  
+  .pagination .disabled .page-link {
+    background-color: white !important;
+    color: orange !important;
+    border-color: white !important;
+    opacity: 1 !important;
+    cursor: not-allowed;
+  }
+  
