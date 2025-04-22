@@ -173,7 +173,8 @@ function firstAndLastPage(event){
     pageLoading();
     // Highlight the clicked button
     textElement.parentElement.classList.add('active');
-    document.getElementById('pokemon-details').style.display = 'none';
+    // document.getElementById('pokemon-details').style.display = 'none';
+    $('#pokemon-details').hide()
 }
 
 /**
