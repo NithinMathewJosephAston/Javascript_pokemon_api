@@ -30,13 +30,11 @@ async function pokemonFetch(url) {
  * @returns {Promise<void>} A promise that resolves when the table is populated.
  */
 async function pokemonTable(Pokedex){
-    const tableBody = document.getElementById('pokemon-table-body');
-    tableBody.innerHTML = '';
+    $('#pokemon-table-body').empty();
     for (let index = 0; index < Pokedex.length; index++) {
         const pokemon = Pokedex[index];
         const row = document.createElement('tr');
         const image_png =  await pokemonFetch(pokemon.url)
-        // console.log(pokemon.url);
         if (image_png.sprites.front_default){
             row.innerHTML = `
             <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
@@ -47,7 +45,7 @@ async function pokemonTable(Pokedex){
                 </a>
             </td>
             `;
-            tableBody.appendChild(row);
+            $('#pokemon-table-body').append(row);
         }
     }
 }
@@ -64,8 +62,10 @@ async function loadData() {
     const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}try`);
     await pokemonTable(data.results);
 
-    document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText == '1');
-    document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText == total);
+    is_first = document.getElementById("pg-1-btn").innerText === '1';
+    $('#prev-btn').parent().toggleClass('disabled', is_first);
+    is_last = document.getElementById("pg-3-btn").innerText == total;
+    $('#next-btn').parent().toggleClass('disabled', is_last);
 }
 
 
@@ -163,17 +163,15 @@ function pageLoading(){
  * @param {Event} event - The click event triggered by a pagination button.
  */
 function firstAndLastPage(event){
-    buttonName = event.target.innerText;
+    // buttonName = event.target.innerText;
+    buttonName = $(event.target).text();
     // Remove active class from all pagination buttons
-    document.querySelectorAll('.pagination .page-item').forEach(item => {
-        item.classList.remove('active');
-    });
+    $('.pagination .page-item').removeClass('active');
 
     buttonPageChange(buttonName);
     pageLoading();
     // Highlight the clicked button
     textElement.parentElement.classList.add('active');
-    // document.getElementById('pokemon-details').style.display = 'none';
     $('#pokemon-details').hide()
 }
 
@@ -190,9 +188,7 @@ function handleButtonClick(event) {
     const buttonId = event.target.id;
     
     // Remove active class from all pagination buttons
-    document.querySelectorAll('.pagination .page-item').forEach(item => {
-        item.classList.remove('active');
-    });
+    $('.pagination .page-item').removeClass('active');
 
     // Handle different button clicks based on their ID
     if (buttonId === 'prev-btn') {
@@ -203,7 +199,7 @@ function handleButtonClick(event) {
         } 
         pageHighlightChecker(textElement, reference);
         is_first = document.getElementById("pg-1-btn").innerText === '1';
-        document.getElementById('prev-btn').parentElement.classList.toggle('disabled', is_first);
+        $('#prev-btn').parent().toggleClass('disabled', is_first);
     } else if (buttonId === 'next-btn') {
         if (Number(document.getElementById("pg-3-btn").innerText) != total){
             buttonPageChange(buttonId);
@@ -213,10 +209,10 @@ function handleButtonClick(event) {
         }
         pageHighlightChecker(textElement, reference);
         is_last = document.getElementById("pg-3-btn").innerText == total;
-        document.getElementById('next-btn').parentElement.classList.toggle('disabled', is_last);
+        $('#next-btn').parent().toggleClass('disabled', is_last);
     } else {
         textElement = document.getElementById(`${buttonId}`);
-        reference = Number(textElement.innerText);
+        reference = Number($(textElement).text());
         if (reference != total){
             if (reference == (total-1) && Number(document.getElementById("pg-3-btn").innerText) == (total-1)){
                 buttonPageChange('next-btn');
@@ -238,7 +234,7 @@ function handleButtonClick(event) {
         // Highlight the clicked button
         pageHighlightChecker(textElement, reference);
     }
-    document.getElementById('pokemon-details').style.display = 'none';
+    $('#pokemon-details').hide()
 }
 
 
@@ -258,14 +254,16 @@ async function showPokemonDetails(url) {
     const response = await fetch(url);
     const data = await response.json();
 
-    const cardBody = document.getElementById('detail-card-body');
-    cardBody.innerHTML = ''; // Clear old content
+    $('#detail-card-body').empty()// Clear old content
 
     // Add Name
     const nameElement = document.createElement('h5');
+    // const nameElement = $('<h5></h5>');
     nameElement.innerText = data.name;
+    // $(nameElement).text() = data.name;
     nameElement.classList.add('card-title', 'text-start');
-    cardBody.appendChild(nameElement);
+    // $(nameElement).addClass('card-title text-start');
+    $('#detail-card-body').append(nameElement);
 
     // Badge Helper
     const createBadgeGroup = (items, label, bgClass) => {
@@ -289,7 +287,7 @@ async function showPokemonDetails(url) {
 
     // Add Types
     const types = data.types.map(t => t.type.name);
-    cardBody.appendChild(createBadgeGroup(types, null, 'text-bg-light'));
+    $('#detail-card-body').append(createBadgeGroup(types, null, 'text-bg-light'));
 
     // Add Image
     const image = document.createElement('img');
@@ -298,24 +296,24 @@ async function showPokemonDetails(url) {
     image.classList.add('img-fluid', 'mb-2');
     image.width = 200;
     image.height = 200;
-    cardBody.appendChild(image);
+    $('#detail-card-body').append(image)
 
     // Add Height & Weight
     const characteristics = document.createElement('p');
     characteristics.innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
     characteristics.classList.add('card-text', 'text-start');
-    cardBody.appendChild(characteristics);
+    $('#detail-card-body').append(characteristics);
 
     // Add Moves
     const moves = data.moves.map(m => m.move.name);
-    cardBody.appendChild(createBadgeGroup(moves, "MOVES:", 'text-bg-danger'));
+    $('#detail-card-body').append(createBadgeGroup(moves, "MOVES:", 'text-bg-danger'));
 
     // Add Abilities
     const abilities = data.abilities.map(a => a.ability.name);
-    cardBody.appendChild(createBadgeGroup(abilities, "ABILITIES:", 'text-bg-success'));
+    $('#detail-card-body').append(createBadgeGroup(abilities, "ABILITIES:", 'text-bg-success'));
 
     // Show the card
-    document.getElementById('pokemon-details').style.display = 'block';
+    $('#pokemon-details').show();
 }
 
 
@@ -337,8 +335,8 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
     textElement = document.getElementById("pg-1-btn")
     reference = Number(textElement.innerText);
     pageHighlightChecker(textElement, reference);
-    is_last = document.getElementById("pg-3-btn").innerText == total
-    document.getElementById('next-btn').parentElement.classList.toggle('disabled', is_last);
+    is_last = document.getElementById("pg-3-btn").innerText == total;
+    $('#next-btn').parent().toggleClass('disabled', is_last);
 })
 .catch((error)=>{
     console.log(error);
