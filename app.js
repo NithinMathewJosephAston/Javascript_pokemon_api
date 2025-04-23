@@ -287,12 +287,14 @@ async function showPokemonDetails(url) {
     $('#detail-card-body').append(createBadgeGroup(types, null, 'text-bg-light'));
 
     // Add Image
-    const image = document.createElement('img');
-    image.src = data.sprites.front_default || '';
-    image.alt = data.name;
-    image.classList.add('img-fluid', 'mb-2');
-    image.width = 200;
-    image.height = 200;
+    const image = $('<img>', {
+        src: data.sprites.front_default || '',
+        alt: data.name,
+        class: 'img-fluid mb-2',
+        width: 200,
+        height: 200
+    });
+    
     $('#detail-card-body').append(image)
 
     // Add Height & Weight
