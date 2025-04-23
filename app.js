@@ -268,7 +268,7 @@ async function showPokemonDetails(url) {
         if (label) {
             const header = $('<p></p>');
             header.text(label);
-            $(header).addClass('card-text', 'text-start');
+            $(header).addClass('card-text text-start');
             $(container).append(header);
         }
 
@@ -294,13 +294,12 @@ async function showPokemonDetails(url) {
         width: 200,
         height: 200
     });
-    
     $('#detail-card-body').append(image)
 
     // Add Height & Weight
-    const characteristics = document.createElement('p');
-    characteristics.innerText = `HT ${data.height}\nWT ${data.weight} lbs.`;
-    characteristics.classList.add('card-text', 'text-start');
+    const characteristics = $('<p></p>');
+    characteristics.text(`HT ${data.height}\nWT ${data.weight} lbs.`);
+    $(characteristics).addClass('card-text text-start');
     $('#detail-card-body').append(characteristics);
 
     // Add Moves
@@ -317,13 +316,9 @@ async function showPokemonDetails(url) {
 
 
 // Attach the event listener to all the page buttons dynamically
-document.querySelectorAll('.page-link').forEach(button => {
-    button.addEventListener('click', handleButtonClick);
-});
+$('.page-link').on('click', handleButtonClick);
 
-document.querySelectorAll('.btn.btn-danger').forEach(button => {
-    button.addEventListener('click', firstAndLastPage);
-});
+$('.btn.btn-danger').on('click', firstAndLastPage);
 
 fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
 // fetch(``)
