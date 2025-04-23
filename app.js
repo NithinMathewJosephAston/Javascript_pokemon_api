@@ -257,12 +257,9 @@ async function showPokemonDetails(url) {
     $('#detail-card-body').empty()// Clear old content
 
     // Add Name
-    const nameElement = document.createElement('h5');
-    // const nameElement = $('<h5></h5>');
-    nameElement.innerText = data.name;
-    // $(nameElement).text() = data.name;
-    nameElement.classList.add('card-title', 'text-start');
-    // $(nameElement).addClass('card-title text-start');
+    const nameElement = $('<h5></h5>');
+    nameElement.text(data.name);
+    $(nameElement).addClass('card-title text-start');
     $('#detail-card-body').append(nameElement);
 
     // Badge Helper
