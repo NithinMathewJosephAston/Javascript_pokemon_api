@@ -264,19 +264,19 @@ async function showPokemonDetails(url) {
 
     // Badge Helper
     const createBadgeGroup = (items, label, bgClass) => {
-        const container = document.createElement('div');
+        const container = $('<div></div>');
         if (label) {
-            const header = document.createElement('p');
-            header.innerText = label;
-            header.classList.add('card-text', 'text-start');
-            container.appendChild(header);
+            const header = $('<p></p>');
+            header.text(label);
+            $(header).addClass('card-text', 'text-start');
+            $(container).append(header);
         }
 
         items.slice(0, 8).forEach(item => {
-            const badge = document.createElement('span');
-            badge.classList.add('badge', 'rounded-pill', bgClass, 'me-2', 'mb-2');
-            badge.innerText = item.toUpperCase();
-            container.appendChild(badge);
+            const badge = $('<span></span>');
+            $(badge).addClass(`badge rounded-pill ${bgClass} me-2 mb-2`);
+            badge.text(item.toUpperCase());
+            $(container).append(badge);
         });
 
         return container;
