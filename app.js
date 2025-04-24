@@ -253,7 +253,7 @@ function handleButtonClick(event) {
 async function showPokemonDetails(url) {
     const response = await fetch(url);
     const data = await response.json();
-    
+
     $('#pokemon-name').text(data.name);
 
     // Badge Helper
@@ -329,4 +329,9 @@ document.getElementById('pokemon-table-body').addEventListener('click', function
         const url = event.target.closest('a').href;
         showPokemonDetails(url);
     }
+});
+
+
+$('#toggle-info').on('click', function () {
+    $('#detail-card-body').fadeToggle();
 });
