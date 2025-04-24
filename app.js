@@ -253,62 +253,43 @@ function handleButtonClick(event) {
 async function showPokemonDetails(url) {
     const response = await fetch(url);
     const data = await response.json();
-
-    $('#detail-card-body').empty()// Clear old content
-
-    // Add Name
-    const nameElement = $('<h5></h5>');
-    nameElement.text(data.name);
-    $(nameElement).addClass('card-title text-start');
-    $('#detail-card-body').append(nameElement);
+    
+    $('#pokemon-name').text(data.name);
 
     // Badge Helper
     const createBadgeGroup = (items, label, bgClass) => {
         const container = $('<div></div>');
         if (label) {
-            const header = $('<p></p>');
-            header.text(label);
-            $(header).addClass('card-text text-start');
-            $(container).append(header);
+            container.append($('<p></p>').addClass('card-text text-start').text(label));
         }
-
         items.slice(0, 8).forEach(item => {
-            const badge = $('<span></span>');
-            $(badge).addClass(`badge rounded-pill ${bgClass} me-2 mb-2`);
-            badge.text(item.toUpperCase());
-            $(container).append(badge);
+            container.append($('<span></span>')
+            .addClass(`badge rounded-pill ${bgClass} me-2 mb-2`)
+            .text(item.toUpperCase())
+            );
         });
-
         return container;
     };
 
     // Add Types
     const types = data.types.map(t => t.type.name);
-    $('#detail-card-body').append(createBadgeGroup(types, null, 'text-bg-light'));
+    $('#pokemon-type').empty().append(createBadgeGroup(types, null, 'text-bg-light'));
 
     // Add Image
-    const image = $('<img>', {
-        src: data.sprites.front_default || '',
-        alt: data.name,
-        class: 'img-fluid mb-2',
-        width: 200,
-        height: 200
-    });
-    $('#detail-card-body').append(image)
+    $('#pokemon-image')
+        .attr('src', data.sprites.front_default || '')
+        .attr('alt', data.name);
 
     // Add Height & Weight
-    const characteristics = $('<p></p>');
-    characteristics.text(`HT ${data.height}\nWT ${data.weight} lbs.`);
-    $(characteristics).addClass('card-text text-start');
-    $('#detail-card-body').append(characteristics);
+    $('#pokemon-stat').text(`HT ${data.height}\nWT ${data.weight} lbs.`);
 
     // Add Moves
     const moves = data.moves.map(m => m.move.name);
-    $('#detail-card-body').append(createBadgeGroup(moves, "MOVES:", 'text-bg-danger'));
+    $('#pokemon-moves').empty().append(createBadgeGroup(moves, "MOVES:", 'text-bg-danger'));
 
     // Add Abilities
     const abilities = data.abilities.map(a => a.ability.name);
-    $('#detail-card-body').append(createBadgeGroup(abilities, "ABILITIES:", 'text-bg-success'));
+    $('#pokemon-abilities').empty().append(createBadgeGroup(abilities, "ABILITIES:", 'text-bg-success'));
 
     // Show the card
     $('#pokemon-details').show();
