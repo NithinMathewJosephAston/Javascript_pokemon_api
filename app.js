@@ -334,5 +334,5 @@ document.getElementById('pokemon-table-body').addEventListener('click', function
 
 $('#toggle-info').on('click', function () {
     $('#detail-card-body').slideToggle('fast'); // or .fadeToggle('fast')
-    $(this).toggleClass('fa-caret-down fa-caret-up');
+    $(this).toggleClass('fa-caret-up fa-caret-down');
   });
