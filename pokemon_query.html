@@ -23,45 +23,52 @@
                 </div> 
             </nav>
         </main>
-        <div id="content-wrapper" class="d-flex justify-content-center align-items-start gap-3 flex-wrap home">
+        <div id="content-wrapper" class="home">
             <!-- Table Wrapper -->
-            <div id="table-wrapper">
-                <h1 class="custom-color text-center mb-4 mt-4" >Pokedex</h1>
-                <table id="pokemon-table" class="table table-light table-hover table-borderless small-table">
-                    <thead>
-                    <tr>
-                        <th scope="col" class="align-middle text-center font-medium custom-color" >Sl No.</th>
-                        <th scope="col" class="align-middle text-center font-medium custom-color" >Pokemon Name</th>
-                        <th scope="col" class="align-middle text-start  font-medium custom-color" >Pokemon</th>
-                    </tr>
-                    </thead>
-                    <tbody id="pokemon-table-body">
-                    <!-- Rows will be injected here via JS -->
-                    </tbody>
-                </table>
-                <div id="pagination-container" class="d-flex justify-content-between align-items-center mb-4" style="width: 50%; min-width: 550px;">
-                    <button type="button" class="btn btn-danger">First</button>
-                    <ul class="pagination m-0">
-                    <li class="page-item disabled"><a class="page-link bg-danger" id="prev-btn" style="cursor: pointer;">Previous</a></li>
-                    <li class="page-item"><a class="page-link bg-danger" id="pg-1-btn" style="cursor: pointer;">1</a></li>
-                    <li class="page-item"><a class="page-link bg-danger" id="pg-2-btn" style="cursor: pointer;">2</a></li>
-                    <li class="page-item"><a class="page-link bg-danger" id="pg-3-btn" style="cursor: pointer;">3</a></li>
-                    <li class="page-item disabled"><a class="page-link bg-danger" id="next-btn" style="cursor: pointer;">Next</a></li>
-                    </ul>
-                    <button type="button" class="btn btn-danger">Last</button>
+            <div class="col-0 col-sm-0 col-md-2 col-lg-3"></div>
+            <div class="col-12 col-sm-12 col-md-8 col-lg-6" id="table-content">
+                <div id="table-wrapper">
+                    <h1 class="custom-color text-center mb-4 mt-4" >Pokedex</h1>
+                    <table id="pokemon-table" class="table table-light table-hover table-borderless small-table">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="align-middle text-center font-medium custom-color" >Sl No.</th>
+                            <th scope="col" class="align-middle text-center font-medium custom-color" >Pokemon Name</th>
+                            <th scope="col" class="align-middle text-start  font-medium custom-color" >Pokemon</th>
+                        </tr>
+                        </thead>
+                        <tbody id="pokemon-table-body">
+                        <!-- Rows will be injected here via JS -->
+                        </tbody>
+                    </table>
+                    <div id="pagination-container" class="d-flex justify-content-between align-items-center mb-4">
+                    <!-- <div id="pagination-container" class="d-flex justify-content-between align-items-center mb-4" style="width: 50%; min-width: 550px;"> -->
+                        <button type="button" class="btn btn-danger">First</button>
+                        <ul class="pagination m-0">
+                        <li class="page-item disabled"><a class="page-link bg-danger" id="prev-btn" style="cursor: pointer;">Previous</a></li>
+                        <li class="page-item"><a class="page-link bg-danger" id="pg-1-btn" style="cursor: pointer;">1</a></li>
+                        <li class="page-item"><a class="page-link bg-danger" id="pg-2-btn" style="cursor: pointer;">2</a></li>
+                        <li class="page-item"><a class="page-link bg-danger" id="pg-3-btn" style="cursor: pointer;">3</a></li>
+                        <li class="page-item disabled"><a class="page-link bg-danger" id="next-btn" style="cursor: pointer;">Next</a></li>
+                        </ul>
+                        <button type="button" class="btn btn-danger">Last</button>
+                    </div>
+                    <div id="error-message" class="alert alert-danger text-center" style="display: none;"></div>
                 </div>
-                <div id="error-message" class="alert alert-danger text-center" style="display: none;"></div>
             </div>
+            <div class="col-sm-0 col-md-2 col-lg-3" id="empty-column"></div>
             <!-- Details Card -->
-            <div id="pokemon-details" class="card text-white bg-red border-warning mt-4" style="display: none; width: 25rem; position: fixed; top: 4rem; right: 2rem;">
-                <div class="card-header text-center"><i id="toggle-info" class="fa-solid fa-caret-up fa-2x" style="cursor: pointer;"></i>INFO</div>
-                <div class="card-body text-center bg-warning" id="detail-card-body" style="height: 35rem;">
-                    <h5 id="pokemon-name" class="card-title text-start"></h5>
-                    <div id="pokemon-type"></div>
-                    <img id="pokemon-image" class="img-fluid mb-2" width="200" height="200" />
-                    <p id="pokemon-stat" class="card-text text-start"></p>
-                    <div id="pokemon-moves"></div>
-                    <div id="pokemon-abilities"></div>
+            <div class="d-none d-lg-block">
+                <div id="pokemon-details" class="card text-white bg-red border-warning mt-4" style="display:none; width: 25rem; position: fixed; top: 4rem; right: 2rem;">
+                    <div class="card-header text-center" id="detail-card-header"><i id="toggle-info" class="fa-solid fa-caret-up fa-2x" style="cursor: pointer;"></i>INFO</div>
+                    <div class="card-body text-center bg-warning" id="detail-card-body">
+                        <h5 id="pokemon-name" class="card-title text-start"></h5>
+                        <div id="pokemon-type"></div>
+                        <img id="pokemon-image" class="img-fluid mb-2" width="200" height="200" />
+                        <p id="pokemon-stat" class="card-text text-start"></p>
+                        <div id="pokemon-moves"></div>
+                        <div id="pokemon-abilities"></div>
+                    </div>
                 </div>
             </div>
         </div>

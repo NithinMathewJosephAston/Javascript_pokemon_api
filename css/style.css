@@ -14,7 +14,7 @@ body {
   }
   
   .btn {
-    font-size: 12px !important;
+    font-size: 12px;
   }
   
   
@@ -36,14 +36,14 @@ body {
   =        Tables & Data         =
   ==============================*/
   
-  table {
+  /* table {
     min-width: 550px;
-  }
+  } */
   
-  .small-table {
+  /* .small-table {
     width: 50%;
     height: 300px;
-  }
+  } */
   
   table tr td,
   table tr th {

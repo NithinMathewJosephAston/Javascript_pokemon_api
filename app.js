@@ -41,7 +41,7 @@ async function pokemonTable(Pokedex){
             <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
             <td class="pokemon-sprite">
                 <a href="${pokemon.url}">
-                ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
+                ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}        
                 </a>
             </td>
             `;
@@ -49,6 +49,7 @@ async function pokemonTable(Pokedex){
         }
     }
 }
+
 
 
 /**
@@ -296,6 +297,23 @@ async function showPokemonDetails(url) {
 }
 
 
+function getRemInPixels(rem){
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+
+function updateFixedElementWidth() {
+    const fixedEl = document.getElementById('pokemon-details');
+    const column = document.getElementById('empty-column');
+
+    if (window.innerWidth >= 992 && fixedEl && column) { // 992px = Bootstrap lg
+      const colWidth = column.offsetWidth;
+      fixedEl.style.width = (colWidth - getRemInPixels(4)) + 'px';
+    } 
+}
+
+window.addEventListener('resize', updateFixedElementWidth);
+window.addEventListener('load', updateFixedElementWidth);
+
 // Attach the event listener to all the page buttons dynamically
 $('.page-link').on('click', handleButtonClick);
 
@@ -333,6 +351,6 @@ document.getElementById('pokemon-table-body').addEventListener('click', function
 
 
 $('#toggle-info').on('click', function () {
-    $('#detail-card-body').slideToggle('fast'); // or .fadeToggle('fast')
+    $('#pokemon-details').slideToggle('fast'); // or .fadeToggle('fast')
     $(this).toggleClass('fa-caret-up fa-caret-down');
   });
