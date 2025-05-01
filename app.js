@@ -30,25 +30,26 @@ async function pokemonFetch(url) {
  * @returns {Promise<void>} A promise that resolves when the table is populated.
  */
 async function pokemonTable(Pokedex){
-    const tableBody = document.getElementById('pokemon-table-body');
-    tableBody.innerHTML = '';
+    $('#pokemon-table-body').empty();
     for (let index = 0; index < Pokedex.length; index++) {
         const pokemon = Pokedex[index];
         const row = document.createElement('tr');
         const image_png =  await pokemonFetch(pokemon.url)
-        // console.log(pokemon.url);
-        row.innerHTML = `
-        <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
-        <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
-        <td class="pokemon-sprite">
-            <a href="${pokemon.url}" target="_blank">
-            ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}
-            </a>
-        </td>
-        `;
-        tableBody.appendChild(row);
+        if (image_png.sprites.front_default){
+            row.innerHTML = `
+            <td scope="row" class="align-middle text-center custom-color font-medium">${"No."+String(offset + index + 1).padStart(3, '0')}</td>
+            <td class="align-middle text-center custom-color font-medium">${pokemon.name}</td>
+            <td class="pokemon-sprite">
+                <a href="${pokemon.url}">
+                ${image_png.sprites.front_default ? `<img src="${image_png.sprites.front_default}" alt="${pokemon.name}" width="150" height="150">`: ''}        
+                </a>
+            </td>
+            `;
+            $('#pokemon-table-body').append(row);
+        }
     }
 }
+
 
 
 /**
@@ -62,8 +63,10 @@ async function loadData() {
     const data = await pokemonFetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}try`);
     await pokemonTable(data.results);
 
-    document.getElementById('prev-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-1-btn").innerText == '1');
-    document.getElementById('next-btn').parentElement.classList.toggle('disabled', document.getElementById("pg-3-btn").innerText == total);
+    is_first = document.getElementById("pg-1-btn").innerText === '1';
+    $('#prev-btn').parent().toggleClass('disabled', is_first);
+    is_last = document.getElementById("pg-3-btn").innerText == total;
+    $('#next-btn').parent().toggleClass('disabled', is_last);
 }
 
 
@@ -161,16 +164,16 @@ function pageLoading(){
  * @param {Event} event - The click event triggered by a pagination button.
  */
 function firstAndLastPage(event){
-    buttonName = event.target.innerText;
+    // buttonName = event.target.innerText;
+    buttonName = $(event.target).text();
     // Remove active class from all pagination buttons
-    document.querySelectorAll('.pagination .page-item').forEach(item => {
-        item.classList.remove('active');
-    });
+    $('.pagination .page-item').removeClass('active');
 
     buttonPageChange(buttonName);
     pageLoading();
     // Highlight the clicked button
     textElement.parentElement.classList.add('active');
+    $('#pokemon-details').hide()
 }
 
 /**
@@ -186,9 +189,7 @@ function handleButtonClick(event) {
     const buttonId = event.target.id;
     
     // Remove active class from all pagination buttons
-    document.querySelectorAll('.pagination .page-item').forEach(item => {
-        item.classList.remove('active');
-    });
+    $('.pagination .page-item').removeClass('active');
 
     // Handle different button clicks based on their ID
     if (buttonId === 'prev-btn') {
@@ -199,7 +200,7 @@ function handleButtonClick(event) {
         } 
         pageHighlightChecker(textElement, reference);
         is_first = document.getElementById("pg-1-btn").innerText === '1';
-        document.getElementById('prev-btn').parentElement.classList.toggle('disabled', is_first);
+        $('#prev-btn').parent().toggleClass('disabled', is_first);
     } else if (buttonId === 'next-btn') {
         if (Number(document.getElementById("pg-3-btn").innerText) != total){
             buttonPageChange(buttonId);
@@ -209,10 +210,10 @@ function handleButtonClick(event) {
         }
         pageHighlightChecker(textElement, reference);
         is_last = document.getElementById("pg-3-btn").innerText == total;
-        document.getElementById('next-btn').parentElement.classList.toggle('disabled', is_last);
+        $('#next-btn').parent().toggleClass('disabled', is_last);
     } else {
         textElement = document.getElementById(`${buttonId}`);
-        reference = Number(textElement.innerText);
+        reference = Number($(textElement).text());
         if (reference != total){
             if (reference == (total-1) && Number(document.getElementById("pg-3-btn").innerText) == (total-1)){
                 buttonPageChange('next-btn');
@@ -233,19 +234,90 @@ function handleButtonClick(event) {
 
         // Highlight the clicked button
         pageHighlightChecker(textElement, reference);
-        // textElement.parentElement.classList.add('active');
     }
+    $('#pokemon-details').hide()
 }
 
 
-// Attach the event listener to all the page buttons dynamically
-document.querySelectorAll('.page-link').forEach(button => {
-    button.addEventListener('click', handleButtonClick);
-});
+/**
+ * Displays detailed information about a selected Pokémon in the detail card panel.
+ * Fetches the Pokémon's data from the provided URL and populates the card with:
+ * - Name
+ * - Types (as badges)
+ * - Image
+ * - Height and Weight
+ * - Moves (as badges)
+ * - Abilities (as badges)
+ *
+ * @param {string} url - The API URL to fetch the Pokémon details from.
+ */
+async function showPokemonDetails(url) {
+    const response = await fetch(url);
+    const data = await response.json();
 
-document.querySelectorAll('.btn.btn-danger').forEach(button => {
-    button.addEventListener('click', firstAndLastPage);
-});
+    $('#pokemon-name').text(data.name);
+
+    // Badge Helper
+    const createBadgeGroup = (items, label, bgClass) => {
+        const container = $('<div></div>');
+        if (label) {
+            container.append($('<p></p>').addClass('card-text text-start').text(label));
+        }
+        items.slice(0, 8).forEach(item => {
+            container.append($('<span></span>')
+            .addClass(`badge rounded-pill ${bgClass} me-2 mb-2`)
+            .text(item.toUpperCase())
+            );
+        });
+        return container;
+    };
+
+    // Add Types
+    const types = data.types.map(t => t.type.name);
+    $('#pokemon-type').empty().append(createBadgeGroup(types, null, 'text-bg-light'));
+
+    // Add Image
+    $('#pokemon-image')
+        .attr('src', data.sprites.front_default || '')
+        .attr('alt', data.name);
+
+    // Add Height & Weight
+    $('#pokemon-stat').text(`HT ${data.height}\nWT ${data.weight} lbs.`);
+
+    // Add Moves
+    const moves = data.moves.map(m => m.move.name);
+    $('#pokemon-moves').empty().append(createBadgeGroup(moves, "MOVES:", 'text-bg-danger'));
+
+    // Add Abilities
+    const abilities = data.abilities.map(a => a.ability.name);
+    $('#pokemon-abilities').empty().append(createBadgeGroup(abilities, "ABILITIES:", 'text-bg-success'));
+
+    // Show the card
+    $('#pokemon-details').show();
+}
+
+
+function getRemInPixels(rem){
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+
+function updateFixedElementWidth() {
+    const fixedEl = document.getElementById('pokemon-details');
+    const column = document.getElementById('empty-column');
+
+    if (window.innerWidth >= 992 && fixedEl && column) { // 992px = Bootstrap lg
+      const colWidth = column.offsetWidth;
+      fixedEl.style.width = (colWidth - getRemInPixels(4)) + 'px';
+    } 
+}
+
+window.addEventListener('resize', updateFixedElementWidth);
+window.addEventListener('load', updateFixedElementWidth);
+
+// Attach the event listener to all the page buttons dynamically
+$('.page-link').on('click', handleButtonClick);
+
+$('.btn.btn-danger').on('click', firstAndLastPage);
 
 fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
 // fetch(``)
@@ -256,8 +328,8 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
     textElement = document.getElementById("pg-1-btn")
     reference = Number(textElement.innerText);
     pageHighlightChecker(textElement, reference);
-    is_last = document.getElementById("pg-3-btn").innerText == total
-    document.getElementById('next-btn').parentElement.classList.toggle('disabled', is_last);
+    is_last = document.getElementById("pg-3-btn").innerText == total;
+    $('#next-btn').parent().toggleClass('disabled', is_last);
 })
 .catch((error)=>{
     console.log(error);
@@ -267,3 +339,18 @@ fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
         errorDiv.innerText = "Oops! Unable to load Pokémon. Please try again later.";
         errorDiv.style.display = 'block';
 })
+
+
+document.getElementById('pokemon-table-body').addEventListener('click', function(event) {
+    if (event.target.tagName === 'IMG' || event.target.tagName === 'A') {
+        event.preventDefault();
+        const url = event.target.closest('a').href;
+        showPokemonDetails(url);
+    }
+});
+
+
+$('#toggle-info').on('click', function () {
+    $('#pokemon-details').slideToggle('fast'); // or .fadeToggle('fast')
+    $(this).toggleClass('fa-caret-up fa-caret-down');
+  });
